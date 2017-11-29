@@ -50,27 +50,8 @@ module ConnectFour
     end
 
     def check_for_winner
-      all_winning_spaces_array =
-        [[35, 28, 21, 14], [28, 21, 14, 7], [21, 14, 7, 0],
-         [36, 29, 22, 15], [29, 22, 15, 8], [22, 15, 8, 1],
-         [37, 30, 23, 16], [30, 23, 16, 9], [23, 16, 9, 2],
-         [38, 31, 24, 17], [31, 24, 17, 10], [24, 17, 10, 3],
-         [39, 32, 25, 18], [32, 25, 18, 11], [25, 18, 11, 4],
-         [40, 33, 26, 19], [33, 26, 19, 12], [26, 19, 12, 5],
-         [41, 34, 27, 20], [34, 27, 20, 13], [27, 20, 13, 6],
-         [14, 22, 30, 38],
-         [7, 15, 23, 31], [15, 23, 31, 39],
-         [0, 8, 16, 24], [8, 16, 24, 32], [16, 24, 32, 40],
-         [1, 9, 17, 25], [9, 17, 25, 33], [17, 25, 33, 41],
-         [2, 10, 18, 26], [10, 18, 26, 34],
-         [3, 11, 19, 27],
-         [3, 9, 15, 21],
-         [4, 10, 16, 22], [10, 16, 22, 28],
-         [5, 11, 17, 23], [11, 17, 23, 29], [17, 23, 29, 35],
-         [6, 12, 18, 24], [12, 18, 24, 30], [18, 24, 30, 36],
-         [13, 19, 25, 31], [19, 25, 31, 37],
-         [20, 26, 32, 38]]
-      all_winning_spaces_array.each do |winning_spaces_array|
+      create_all_winning_spaces_array
+      @all_winning_spaces_array.each do |winning_spaces_array|
         all_spaces_true = true
         winning_spaces_array.each do |winning_index|
           all_spaces_true = false unless @board.spaces[winning_index] ==
@@ -79,6 +60,60 @@ module ConnectFour
         return true if all_spaces_true
       end
       false
+    end
+
+    def create_all_winning_spaces_array
+      @all_winning_spaces_array = []
+      create_vertical_winning_arrays
+      create_horizontal_winning_arrays
+      create_left_to_right_diagonal_winning_arrays
+      create_right_to_left_diagonal_winning_arrays
+    end
+
+    def create_vertical_winning_arrays
+      (21..41).to_a.each do |x|
+        winning_spaces_array = [x]
+        3.times do |y|
+          winning_spaces_array.push(x - (7 * (y + 1)))
+        end
+        @all_winning_spaces_array.push(winning_spaces_array)
+      end
+    end
+
+    def create_horizontal_winning_arrays
+      [0, 7, 14, 21, 28, 35].each do |x|
+        4.times do |column|
+          winning_spaces_array = [x + column]
+          3.times do |y|
+            winning_spaces_array.push(x + y + 1 + column)
+          end
+          @all_winning_spaces_array.push(winning_spaces_array)
+        end
+      end
+    end
+
+    def create_left_to_right_diagonal_winning_arrays
+      [0, 7, 14].each do |x|
+        4.times do |diagonal|
+          winning_spaces_array = [x + diagonal]
+          3.times do |y|
+            winning_spaces_array.push(x + 8 * (y + 1) + diagonal)
+          end
+          @all_winning_spaces_array.push(winning_spaces_array)
+        end
+      end
+    end
+
+    def create_right_to_left_diagonal_winning_arrays
+      [3, 10, 17].each do |x|
+        4.times do |diagonal|
+          winning_spaces_array = [x + diagonal]
+          3.times do |y|
+            winning_spaces_array.push(x + 6 * (y + 1) + diagonal)
+          end
+          @all_winning_spaces_array.push(winning_spaces_array)
+        end
+      end
     end
 
     def check_for_no_winner
