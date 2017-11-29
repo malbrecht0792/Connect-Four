@@ -19,6 +19,7 @@ module ConnectFour
       find_space_to_move
       @board.update_board(@current_player, @space_to_move)
       @board.display_board
+      change_players
     end
 
     def find_space_to_move
@@ -35,6 +36,10 @@ module ConnectFour
 
     def check_space_to_move
       @board.spaces[@space_to_move] == '-'
+    end
+
+    def change_players
+      @current_player = @current_player == @player1 ? @player2 : @player1
     end
   end
 
