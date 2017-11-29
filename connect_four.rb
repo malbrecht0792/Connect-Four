@@ -102,12 +102,8 @@ module ConnectFour
     attr_accessor :spaces
 
     def initialize
-      @spaces = ['-', '-', '-', '-', '-', '-', '-',
-                 '-', '-', '-', '-', '-', '-', '-',
-                 '-', '-', '-', '-', '-', '-', '-',
-                 '-', '-', '-', '-', '-', '-', '-',
-                 '-', '-', '-', '-', '-', '-', '-',
-                 '-', '-', '-', '-', '-', '-', '-']
+      @spaces = []
+      42.times { @spaces.push('-') }
     end
 
     def update_board(current_player, space_to_move)
