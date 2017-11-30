@@ -173,10 +173,6 @@ module ConnectFour
     end
   end
 
-  class ComputerPlayer < Player
-    
-  end
-
   class Board
     attr_accessor :spaces
 
@@ -210,4 +206,4 @@ end
 
 include ConnectFour
 
-Game.new('Player 1', 'Player 2')
+# Game.new('Player 1', 'Player 2')
