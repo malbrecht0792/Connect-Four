@@ -1,6 +1,7 @@
 module ConnectFour
   class Game
     def initialize(player1_name, player2_name)
+      one_player_or_two?
       @player1 = Player.new(player1_name, 'R')
       @player2 = Player.new(player2_name, 'Y')
       @board = Board.new
@@ -9,19 +10,60 @@ module ConnectFour
       game_loop
     end
 
-    def game_loop
-      turn while @continue_game
+    def one_player_or_two?
+      puts 'Would you like to play one player (1) or two player (2)?'
+      @num_of_players = gets.chomp.to_i
+      unless @num_of_players == 1 || @num_of_players == 2
+        puts 'Please enter either 1 or 2'
+        one_player_or_two?
+      end
     end
 
-    def turn
+    def game_loop
+      while @continue_game
+        @num_of_players == 1 && @current_player == @player2 ?
+                           computer_turn : human_turn
+        @board.display_board
+        declare_winner if check_for_winner(@current_player)
+        check_for_no_winner
+        change_players
+      end
+    end
+
+    def human_turn
       puts "#{@current_player.name}, please select a slot (1-7)."
       @slot_to_move = gets.chomp.to_i
+      redo_human_turn unless find_space_to_move
       find_space_to_move
       @board.update_board(@current_player, @space_to_move)
-      @board.display_board
-      declare_winner if check_for_winner
-      check_for_no_winner
-      change_players
+    end
+
+    def redo_human_turn
+      puts 'This slot is full! Please select a different slot.'
+      @slot_to_move = gets.chomp.to_i
+      redo_human_turn unless find_space_to_move
+    end
+
+    def computer_turn
+      7.times do |column|
+        @slot_to_move = column + 1
+        next unless find_space_to_move
+        @board.update_board(opposite_player, @space_to_move)
+        return @board.update_board(@current_player, @space_to_move) if
+               check_for_winner(opposite_player)
+        @board.undo_move(@space_to_move)
+      end
+      random_move
+    end
+
+    def random_move
+      @slot_to_move = rand(1..7)
+      random_move unless find_space_to_move
+      @board.update_board(@current_player, @space_to_move)
+    end
+
+    def opposite_player
+      @current_player == @player1 ? @player2 : @player1
     end
 
     def find_space_to_move
@@ -29,11 +71,9 @@ module ConnectFour
 
       index_array.each do |index|
         @space_to_move = index + (@slot_to_move - 1)
-        return if @board.spaces[@space_to_move] == '-'
+        return true if @board.spaces[@space_to_move] == '-'
       end
-      puts 'This slot is full! Please select a different slot.'
-      @slot_to_move = gets.chomp.to_i
-      find_space_to_move
+      false
     end
 
     def check_space_to_move
@@ -45,17 +85,17 @@ module ConnectFour
     end
 
     def declare_winner
-      puts "#{@current_player.name}, you are the winner!"
+      puts "#{@current_player.name} wins!"
       @continue_game = false
     end
 
-    def check_for_winner
+    def check_for_winner(current_player)
       create_all_winning_spaces_array
       @all_winning_spaces_array.each do |winning_spaces_array|
         all_spaces_true = true
         winning_spaces_array.each do |winning_index|
           all_spaces_true = false unless @board.spaces[winning_index] ==
-                                         @current_player.symbol
+                                         current_player.symbol
         end
         return true if all_spaces_true
       end
@@ -133,6 +173,10 @@ module ConnectFour
     end
   end
 
+  class ComputerPlayer < Player
+    
+  end
+
   class Board
     attr_accessor :spaces
 
@@ -143,6 +187,10 @@ module ConnectFour
 
     def update_board(current_player, space_to_move)
       @spaces[space_to_move] = current_player.symbol
+    end
+
+    def undo_move(space_to_move)
+      @spaces[space_to_move] = '-'
     end
 
     def display_board
