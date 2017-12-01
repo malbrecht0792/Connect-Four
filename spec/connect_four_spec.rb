@@ -1,8 +1,8 @@
 require 'connect_four'
 
 describe Player do
-  let (:my_player) do
-    Player.new('player1', 'X')
+  let(:my_player) do
+    Player.new('player1', 'R')
   end
 
   describe 'initialize' do
@@ -14,19 +14,19 @@ describe Player do
 
     context 'given a new instance of class Player, Player.symbol' do
       it "returns the player's symbol" do
-        expect(my_player.symbol).to eql('X')
+        expect(my_player.symbol).to eql('R')
       end
     end
   end
 end
 
 describe Board do
-  let (:my_board) do
+  let(:my_board) do
     Board.new
   end
 
-  let (:my_player) do
-    Player.new('player1', 'X')
+  let(:my_player) do
+    Player.new('player1', 'R')
   end
 
   describe 'initialize' do
@@ -42,8 +42,8 @@ describe Board do
       before do
         my_board.update_board(my_player, 10)
       end
-      it "returns 'X' for space 10 on the board" do
-        expect(my_board.spaces[10]).to eql('X')
+      it "returns 'R' for space 10 on the board" do
+        expect(my_board.spaces[10]).to eql('R')
       end
     end
   end

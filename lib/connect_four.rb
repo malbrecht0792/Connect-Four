@@ -206,4 +206,5 @@ end
 
 include ConnectFour
 
-# Game.new('Player 1', 'Player 2')
+# Comment out this line when running bundle exec rspec to test
+Game.new('Player 1', 'Player 2')
